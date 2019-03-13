@@ -21,7 +21,10 @@ class InputProcessor
         foreach ($input as $line) {
             $operationData = explode(',', $line);
 
-            Validator::validateOperationData($operationData);
+            $isValid = Validator::validateOperationData($operationData);
+            if (!$isValid) {
+                die("Invalid Input! \n");
+            }
 
             $operation = new Operation(
                 $operationData[0],

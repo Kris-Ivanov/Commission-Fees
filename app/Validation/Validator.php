@@ -10,11 +10,12 @@ class Validator
      * Validate Operation data array
      *
      * @param array $data
+     * @return bool
      */
-    public static function validateOperationData(array $data)
+    public static function validateOperationData(array $data): bool
     {
         if (count($data) < 6) {
-            die("Invalid Input! \n");
+            return false;
         }
 
         $date = self::validateDate($data[0]);
@@ -24,8 +25,10 @@ class Validator
         $currency = self::validateCurrency($data[5]);
 
         if (!$date || !$userType || !$operationType || !$amount || !$currency) {
-            die("Invalid Input! \n");
+            return false;
         }
+
+        return true;
     }
 
     /**
