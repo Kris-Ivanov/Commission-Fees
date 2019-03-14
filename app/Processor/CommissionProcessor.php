@@ -7,8 +7,8 @@ use App\Operation;
 class CommissionProcessor
 {
     const CONVERSION_RATES = [
-        Operation::CURRENCY_USD => 1.1497,
-        Operation::CURRENCY_JPY => 129.53,
+        Operation::CURRENCY_USD => 1.1297,
+        Operation::CURRENCY_JPY => 119.51,
     ];
 
     /**
@@ -26,7 +26,7 @@ class CommissionProcessor
             $commission = CashOutProcessor::calculateFee($operation);
         }
 
-        return number_format(round($commission, 2), 2);
+        return number_format(round($commission, 2), 2, '.', '');
     }
 
     /**

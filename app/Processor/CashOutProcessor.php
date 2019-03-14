@@ -86,7 +86,7 @@ class CashOutProcessor
          * Get calendar Week number of Operation Date
          */
         $date = new DateTime($operation->getDate());
-        $week = $date->format("W");
+        $week = $date->format("Y-W");
 
         /**
          * Get User Data from registry
