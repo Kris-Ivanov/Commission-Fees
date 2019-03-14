@@ -47,8 +47,6 @@ class CashInProcessor
             return self::MAXIMUM_FEE['amount'];
         }
 
-        $conversionRate = CommissionProcessor::CONVERSION_RATES[$currency];
-
-        return self::MAXIMUM_FEE['amount'] * $conversionRate;
+        return CommissionProcessor::convertAmount($currency, self::MAXIMUM_FEE['amount']);
     }
 }

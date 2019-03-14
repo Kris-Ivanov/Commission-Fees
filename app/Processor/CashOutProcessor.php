@@ -78,6 +78,7 @@ class CashOutProcessor
      * @param Operation $operation
      *
      * @return array
+     * @throws ?DateTime Exception
      */
     private static function getUserData(Operation $operation): array
     {
@@ -140,10 +141,8 @@ class CashOutProcessor
          * Get the user's Free Amount in his Currency and his Operation Amount in EUR
          */
         if ($operation->getCurrency() !== self::NATURAL_WEEKLY_FREE_AMOUNT['currency']) {
-            $conversionRate = CommissionProcessor::CONVERSION_RATES[$operation->getCurrency()];
-
-            $freeAmount = $freeAmount * $conversionRate;
-            $eurAmount = $eurAmount / $conversionRate;
+            $freeAmount = CommissionProcessor::convertAmount($operation->getCurrency(), $freeAmount);
+            $eurAmount = CommissionProcessor::convertAmount($operation->getCurrency(), $eurAmount, true);
         }
 
         return [
@@ -187,8 +186,6 @@ class CashOutProcessor
             return self::LEGAL_MINIMUM_FEE['amount'];
         }
 
-        $conversionRate = CommissionProcessor::CONVERSION_RATES[$currency];
-
-        return self::LEGAL_MINIMUM_FEE['amount'] * $conversionRate;
+        return CommissionProcessor::convertAmount($currency, self::LEGAL_MINIMUM_FEE['amount']);
     }
 }

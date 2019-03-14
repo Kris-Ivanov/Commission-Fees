@@ -28,4 +28,24 @@ class CommissionProcessor
 
         return number_format(round($commission, 2), 2);
     }
+
+    /**
+     * Get converted amount into given currency
+     *
+     * @param string $currency
+     * @param float $amount
+     * @param bool $inEuro
+     *
+     * @return float
+     */
+    public static function convertAmount(string $currency, float $amount, bool $inEuro = false): float
+    {
+        $conversionRate = self::CONVERSION_RATES[$currency];
+
+        if ($inEuro) {
+            return $amount / $conversionRate;
+        }
+
+        return $amount * $conversionRate;
+    }
 }
