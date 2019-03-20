@@ -31,11 +31,4 @@ $cashOutProcessor = new CashOutProcessor();
 $commissionProcessor = new CommissionProcessor($cashInProcessor, $cashOutProcessor);
 $inputProcessor = new InputProcessor($validator, $commissionProcessor);
 
-$commissions = $inputProcessor->processInput($inputArray);
-
-/**
- * Print Commission Fees
- */
-foreach ($commissions as $commission) {
-    fwrite(STDOUT, $commission . "\n");
-}
+$inputProcessor->processInput($inputArray);

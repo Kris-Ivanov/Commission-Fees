@@ -7,8 +7,6 @@ use App\Validation\Validator;
 
 class InputProcessor
 {
-    private static $commissions = [];
-
     /**
      * @var Validator $validator
      */
@@ -35,9 +33,9 @@ class InputProcessor
      *
      * @param array $input
      *
-     * @return array $commissions
+     * @return void
      */
-    public function processInput(array $input): array
+    public function processInput(array $input): void
     {
         foreach ($input as $line) {
             $operationData = explode(',', $line);
@@ -56,9 +54,9 @@ class InputProcessor
                 $operationData[5]
             );
 
-            self::$commissions[] = $this->commissionProcessor->calculateCommission($operation);
-        }
+            $commission = $this->commissionProcessor->calculateCommission($operation);
 
-        return self::$commissions;
+            fwrite(STDOUT, $commission . "\n");
+        }
     }
 }
