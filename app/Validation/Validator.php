@@ -12,7 +12,7 @@ class Validator
      * @param array $data
      * @return bool
      */
-    public static function validateOperationData(array $data): bool
+    public function validateOperationData(array $data): bool
     {
         if (count($data) < 6) {
             return false;

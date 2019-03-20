@@ -12,6 +12,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testNaturalPersonFreeOperation(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             4,
@@ -21,7 +23,7 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $fee = CashOutProcessor::calculateFee($operation);
+        $fee = $cashOutProcessor->calculateFee($operation);
 
         $this->assertEquals(0, $fee);
     }
@@ -31,6 +33,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testNaturalPersonFeeAfterDiscount(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             5,
@@ -42,7 +46,7 @@ class CashOutProcessorTest extends TestCase
 
         $amount = $operation->getAmount() - CashOutProcessor::NATURAL_WEEKLY_FREE_AMOUNT['amount'];
 
-        $fee = CashOutProcessor::calculateFee($operation);
+        $fee = $cashOutProcessor->calculateFee($operation);
         $expectedFee = ($amount * CashOutProcessor::NATURAL_FEE_PERCENTAGE) / 100;
 
         $this->assertEquals($expectedFee, $fee);
@@ -54,6 +58,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testNaturalPersonFeeWithoutDiscount(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $firstOperation = new Operation(
             date('Y-m-d'),
             6,
@@ -72,8 +78,8 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        CashOutProcessor::calculateFee($firstOperation);
-        $fee = CashOutProcessor::calculateFee($secondOperation);
+        $cashOutProcessor->calculateFee($firstOperation);
+        $fee = $cashOutProcessor->calculateFee($secondOperation);
 
         $expectedFee = ($secondOperation->getAmount() * CashOutProcessor::NATURAL_FEE_PERCENTAGE) / 100;
 
@@ -86,6 +92,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testNaturalPersonDiscountNextWeek(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $firstOperation = new Operation(
             date('Y-m-d'),
             7,
@@ -107,8 +115,8 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        CashOutProcessor::calculateFee($firstOperation);
-        $fee = CashOutProcessor::calculateFee($secondOperation);
+        $cashOutProcessor->calculateFee($firstOperation);
+        $fee = $cashOutProcessor->calculateFee($secondOperation);
 
         $this->assertEquals(0, $fee);
     }
@@ -118,6 +126,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testCalculateLegalPersonFee(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             8,
@@ -127,7 +137,7 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $fee = CashOutProcessor::calculateFee($operation);
+        $fee = $cashOutProcessor->calculateFee($operation);
         $expectedFee = ($operation->getAmount() * CashOutProcessor::LEGAL_FEE_PERCENTAGE) / 100;
 
         $this->assertEquals($expectedFee, $fee);
@@ -138,6 +148,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testLegalPersonMinimumFee(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             9,
@@ -147,7 +159,7 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $fee = CashOutProcessor::calculateFee($operation);
+        $fee = $cashOutProcessor->calculateFee($operation);
 
         $this->assertEquals(CashOutProcessor::LEGAL_MINIMUM_FEE['amount'], $fee);
     }
@@ -157,6 +169,8 @@ class CashOutProcessorTest extends TestCase
      */
     public function testMinimumFeeInOtherCurrency(): void
     {
+        $cashOutProcessor = new CashOutProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             10,
@@ -166,7 +180,7 @@ class CashOutProcessorTest extends TestCase
             Operation::CURRENCY_JPY
         );
 
-        $minimumFee = CashOutProcessor::getLegalPersonMinimumFee($operation);
+        $minimumFee = $cashOutProcessor->getLegalPersonMinimumFee($operation);
         $expectedMinimumFee = CashOutProcessor::LEGAL_MINIMUM_FEE['amount'] * CommissionProcessor::CONVERSION_RATES[$operation->getCurrency()];
 
         $this->assertEquals($expectedMinimumFee, $minimumFee);

@@ -13,6 +13,10 @@ class CommissionProcessorTest extends TestCase
      */
     public function testCalculateCashInCommission(): void
     {
+        $cashInProcessor = new CashInProcessor();
+        $cashOutProcessor = new CashOutProcessor();
+        $commissionProcessor = new CommissionProcessor($cashInProcessor, $cashOutProcessor);
+
         $operation = new Operation(
             date('Y-m-d'),
             11,
@@ -22,7 +26,7 @@ class CommissionProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $commission = CommissionProcessor::calculateCommission($operation);
+        $commission = $commissionProcessor->calculateCommission($operation);
 
         $expectedCommission = ($operation->getAmount() * CashInProcessor::FEE_PERCENTAGE) / 100;
 
@@ -36,6 +40,10 @@ class CommissionProcessorTest extends TestCase
      */
     public function testCalculateCashOutCommission(): void
     {
+        $cashInProcessor = new CashInProcessor();
+        $cashOutProcessor = new CashOutProcessor();
+        $commissionProcessor = new CommissionProcessor($cashInProcessor, $cashOutProcessor);
+
         $operation = new Operation(
             date('Y-m-d'),
             12,
@@ -45,7 +53,7 @@ class CommissionProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $commission = CommissionProcessor::calculateCommission($operation);
+        $commission = $commissionProcessor->calculateCommission($operation);
 
         $expectedCommission = ($operation->getAmount() * CashOutProcessor::LEGAL_FEE_PERCENTAGE) / 100;
 

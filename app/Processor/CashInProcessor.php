@@ -19,9 +19,9 @@ class CashInProcessor
      *
      * @return float
      */
-    public static function calculateFee(Operation $operation): float
+    public function calculateFee(Operation $operation): float
     {
-        $maximumFee = self::getMaximumFee($operation);
+        $maximumFee = $this->getMaximumFee($operation);
 
         $fee = ($operation->getAmount() * self::FEE_PERCENTAGE) / 100;
 
@@ -39,7 +39,7 @@ class CashInProcessor
      *
      * @return float
      */
-    public static function getMaximumFee(Operation $operation): float
+    public function getMaximumFee(Operation $operation): float
     {
         $currency = $operation->getCurrency();
 

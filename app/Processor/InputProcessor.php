@@ -10,18 +10,39 @@ class InputProcessor
     private static $commissions = [];
 
     /**
+     * @var Validator $validator
+     */
+    private $validator;
+
+    /**
+     * @var CommissionProcessor $commissionProcessor
+     */
+    private $commissionProcessor;
+
+    /**
+     * InputProcessor constructor.
+     * @param Validator $validator
+     * @param CommissionProcessor $commissionProcessor
+     */
+    public function __construct(Validator $validator, CommissionProcessor $commissionProcessor)
+    {
+        $this->validator = $validator;
+        $this->commissionProcessor = $commissionProcessor;
+    }
+
+    /**
      * Process Input lines and calculate Commission Fees
      *
      * @param array $input
      *
      * @return array $commissions
      */
-    public static function processInput(array $input): array
+    public function processInput(array $input): array
     {
         foreach ($input as $line) {
             $operationData = explode(',', $line);
 
-            $isValid = Validator::validateOperationData($operationData);
+            $isValid = $this->validator->validateOperationData($operationData);
             if (!$isValid) {
                 die("Invalid Input! \n");
             }
@@ -35,7 +56,7 @@ class InputProcessor
                 $operationData[5]
             );
 
-            self::$commissions[] = CommissionProcessor::calculateCommission($operation);
+            self::$commissions[] = $this->commissionProcessor->calculateCommission($operation);
         }
 
         return self::$commissions;

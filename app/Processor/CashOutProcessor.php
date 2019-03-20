@@ -27,13 +27,13 @@ class CashOutProcessor
      *
      * @return float
      */
-    public static function calculateFee(Operation $operation): float
+    public function calculateFee(Operation $operation): float
     {
         if ($operation->getUserType() === Operation::USER_TYPE_NATURAL) {
-            return self::calculateNaturalPersonFee($operation);
+            return $this->calculateNaturalPersonFee($operation);
         }
 
-        return self::calculateLegalPersonFee($operation);
+        return $this->calculateLegalPersonFee($operation);
     }
 
     /**
@@ -43,9 +43,9 @@ class CashOutProcessor
      *
      * @return float
      */
-    private static function calculateNaturalPersonFee(Operation $operation): float
+    private function calculateNaturalPersonFee(Operation $operation): float
     {
-        $userDataArray = self::getUserData($operation);
+        $userDataArray = $this->getUserData($operation);
         $week = $userDataArray['week'];
         $userData = $userDataArray['data'][$week];
 
@@ -56,9 +56,9 @@ class CashOutProcessor
             return ($operation->getAmount() * self::NATURAL_FEE_PERCENTAGE) / 100;
         }
 
-        $amounts = self::getOperationAndDiscountAmounts($operation, $userData['free_amount']);
+        $amounts = $this->getOperationAndDiscountAmounts($operation, $userData['free_amount']);
 
-        self::updateUserData($userDataArray['data'], $operation->getUserId(), $week, $amounts['operation']);
+        $this->updateUserData($userDataArray['data'], $operation->getUserId(), $week, $amounts['operation']);
 
         /**
          * Operation is free
@@ -80,7 +80,7 @@ class CashOutProcessor
      * @return array
      * @throws ?DateTime Exception
      */
-    private static function getUserData(Operation $operation): array
+    private function getUserData(Operation $operation): array
     {
         /**
          * Get calendar Week number of Operation Date
@@ -119,7 +119,7 @@ class CashOutProcessor
      *
      * @return void
      */
-    private static function updateUserData(array $userData, int $userId, string $week, float $amount): void
+    private function updateUserData(array $userData, int $userId, string $week, float $amount): void
     {
         $userData[$week]['operations_count']++;
         $userData[$week]['free_amount'] = $userData[$week]['free_amount'] - $amount;
@@ -133,7 +133,7 @@ class CashOutProcessor
      *
      * @return array
      */
-    private static function getOperationAndDiscountAmounts(Operation $operation, float $freeAmount): array
+    private function getOperationAndDiscountAmounts(Operation $operation, float $freeAmount): array
     {
         $eurAmount = $operation->getAmount();
 
@@ -158,9 +158,9 @@ class CashOutProcessor
      *
      * @return float
      */
-    private static function calculateLegalPersonFee(Operation $operation): float
+    private function calculateLegalPersonFee(Operation $operation): float
     {
-        $minimumFee = self::getLegalPersonMinimumFee($operation);
+        $minimumFee = $this->getLegalPersonMinimumFee($operation);
 
         $fee = ($operation->getAmount() * self::LEGAL_FEE_PERCENTAGE) / 100;
 
@@ -178,7 +178,7 @@ class CashOutProcessor
      *
      * @return float
      */
-    public static function getLegalPersonMinimumFee(Operation $operation): float
+    public function getLegalPersonMinimumFee(Operation $operation): float
     {
         $currency = $operation->getCurrency();
 

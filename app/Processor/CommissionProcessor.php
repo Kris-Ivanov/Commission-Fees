@@ -12,18 +12,39 @@ class CommissionProcessor
     ];
 
     /**
+     * @var CashInProcessor $cashInProcessor
+     */
+    private $cashInProcessor;
+
+    /**
+     * @var CashOutProcessor $cashOutProcessor
+     */
+    private $cashOutProcessor;
+
+    /**
+     * CommissionProcessor constructor.
+     * @param CashInProcessor $cashInProcessor
+     * @param CashOutProcessor $cashOutProcessor
+     */
+    public function __construct(CashInProcessor $cashInProcessor, CashOutProcessor $cashOutProcessor)
+    {
+        $this->cashInProcessor = $cashInProcessor;
+        $this->cashOutProcessor = $cashOutProcessor;
+    }
+
+    /**
      * Get Commission Fee for given Operation
      *
      * @param Operation $operation
      *
      * @return string
      */
-    public static function calculateCommission(Operation $operation): string
+    public function calculateCommission(Operation $operation): string
     {
         if ($operation->getOperationType() === Operation::OPERATION_TYPE_CASH_IN) {
-            $commission = CashInProcessor::calculateFee($operation);
+            $commission = $this->cashInProcessor->calculateFee($operation);
         } else {
-            $commission = CashOutProcessor::calculateFee($operation);
+            $commission = $this->cashOutProcessor->calculateFee($operation);
         }
 
         return number_format(round($commission, 2), 2, '.', '');

@@ -2,7 +2,11 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+use App\Processor\CashInProcessor;
+use App\Processor\CashOutProcessor;
+use App\Processor\CommissionProcessor;
 use App\Processor\InputProcessor;
+use App\Validation\Validator;
 
 $arguments = $argv;
 
@@ -21,7 +25,13 @@ $inputArray = explode("\n", $input);
 /**
  * Process Operations
  */
-$commissions = InputProcessor::processInput($inputArray);
+$validator = new Validator();
+$cashInProcessor = new CashInProcessor();
+$cashOutProcessor = new CashOutProcessor();
+$commissionProcessor = new CommissionProcessor($cashInProcessor, $cashOutProcessor);
+$inputProcessor = new InputProcessor($validator, $commissionProcessor);
+
+$commissions = $inputProcessor->processInput($inputArray);
 
 /**
  * Print Commission Fees

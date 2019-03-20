@@ -12,6 +12,8 @@ class CashInProcessorTest extends TestCase
      */
     public function testMaximumFee(): void
     {
+        $cashInProcessor = new CashInProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             1,
@@ -21,7 +23,7 @@ class CashInProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $fee = CashInProcessor::calculateFee($operation);
+        $fee = $cashInProcessor->calculateFee($operation);
 
         $this->assertEquals(CashInProcessor::MAXIMUM_FEE['amount'], $fee);
     }
@@ -31,6 +33,8 @@ class CashInProcessorTest extends TestCase
      */
     public function testCalculateFee(): void
     {
+        $cashInProcessor = new CashInProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             2,
@@ -40,7 +44,7 @@ class CashInProcessorTest extends TestCase
             Operation::CURRENCY_EUR
         );
 
-        $fee = CashInProcessor::calculateFee($operation);
+        $fee = $cashInProcessor->calculateFee($operation);
         $expectedFee = ($operation->getAmount() * CashInProcessor::FEE_PERCENTAGE) / 100;
 
         $this->assertEquals($expectedFee, $fee);
@@ -51,6 +55,8 @@ class CashInProcessorTest extends TestCase
      */
     public function testGetMaximumFeeInOtherCurrency(): void
     {
+        $cashInProcessor = new CashInProcessor();
+
         $operation = new Operation(
             date('Y-m-d'),
             3,
@@ -60,7 +66,7 @@ class CashInProcessorTest extends TestCase
             Operation::CURRENCY_USD
         );
 
-        $maximumFee = CashInProcessor::getMaximumFee($operation);
+        $maximumFee = $cashInProcessor->getMaximumFee($operation);
         $expectedMaximumFee = CashInProcessor::MAXIMUM_FEE['amount'] * CommissionProcessor::CONVERSION_RATES[$operation->getCurrency()];
 
         $this->assertEquals($expectedMaximumFee, $maximumFee);
